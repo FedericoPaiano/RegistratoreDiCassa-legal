@@ -1,0 +1,164 @@
+:root {
+  color-scheme: light;
+  --primary: #006874;
+  --primary-dark: #004f58;
+  --text: #1b1b1f;
+  --muted: #5f6368;
+  --surface: #ffffff;
+  --background: #f4f7f8;
+  --border: #d7e0e2;
+  --danger: #9b1c1c;
+  --max-width: 760px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--background);
+}
+
+a {
+  color: var(--primary);
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+.site-header,
+.site-footer {
+  background: var(--primary);
+  color: #fff;
+}
+
+.site-header {
+  padding: 1.5rem 1rem 1.25rem;
+}
+
+.site-header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.6rem;
+}
+
+.site-header p {
+  margin: 0;
+  opacity: 0.92;
+}
+
+.site-nav {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+}
+
+.site-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.site-nav a[aria-current="page"] {
+  text-decoration: underline;
+}
+
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1rem;
+}
+
+.card h2,
+.card h3 {
+  margin-top: 0;
+  color: var(--primary-dark);
+}
+
+.card.danger {
+  border-color: #e8b4b4;
+  background: #fff8f8;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+ol.steps {
+  padding-left: 1.25rem;
+}
+
+ol.steps li + li {
+  margin-top: 0.75rem;
+}
+
+ul.compact {
+  padding-left: 1.2rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #eef4f5;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.button-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.button-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.site-footer {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+.site-footer a {
+  color: #fff;
+}
