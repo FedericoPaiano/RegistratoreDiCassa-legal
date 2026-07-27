@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Informativa privacy - Registratore di Cassa</title>
   <meta name="description" content="Informativa sulla privacy dell'app Android Registratore di Cassa.">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <header class="site-header">
@@ -28,7 +28,7 @@
         <strong>Titolare del Trattamento:</strong> Federico Paiano<br>
         <strong>Email di contatto:</strong>
         <a href="mailto:southtechitaly@gmail.com">southtechitaly@gmail.com</a><br>
-        <strong>Data di ultimo aggiornamento:</strong> 22 giugno 2026
+        <strong>Data di ultimo aggiornamento:</strong> 27 luglio 2026
       </p>
     </section>
 
@@ -44,7 +44,8 @@
       <p>
         L'App e progettata principalmente per l'uso da parte di esercenti e operatori commerciali
         e, nella configurazione standard, non richiede dati identificativi del cliente finale ne
-        dati completi della carta di pagamento.
+        dati completi della carta di pagamento. L'utente e invitato a non inserire dati personali
+        non necessari in campi liberi, note operative o file condivisi.
       </p>
     </section>
 
@@ -52,18 +53,25 @@
       <h2>2. Dati trattati</h2>
 
       <h3>2.1 Dati operativi locali</h3>
-      <p>L'App memorizza principalmente dati in locale sul dispositivo, tra cui:</p>
+      <p>
+        L'App memorizza principalmente dati in locale sul dispositivo, tramite database Room
+        (SQLite) e preferenze cifrate, tra cui:
+      </p>
       <ul class="compact">
         <li>catalogo prodotti, prezzi, categorie, aggiunte e configurazioni IVA;</li>
-        <li>transazioni di vendita, righe di dettaglio, importi, metodo di pagamento ed esiti fiscali;</li>
+        <li>transazioni di vendita, righe di dettaglio, importi, metodo di pagamento, esiti fiscali e progressivi del documento commerciale;</li>
         <li>sessioni e turni di cassa, movimenti di cassa, report e storico operativo;</li>
         <li>audit log delle operazioni sensibili;</li>
-        <li>configurazioni di postazione, evento, stampanti e terminali di pagamento;</li>
-        <li>impostazioni di sicurezza e sincronizzazione.</li>
+        <li>configurazioni della postazione, dell'evento, dell'organizzazione, delle stampanti e dei terminali di pagamento;</li>
+        <li>impostazioni di sicurezza e sincronizzazione, ove applicabili.</li>
       </ul>
+      <p>
+        Il database locale risiede nell'area privata dell'App. Le preferenze sensibili sono gestite
+        tramite <code>EncryptedSharedPreferences</code>.
+      </p>
 
       <h3>2.2 Account cloud e gestione licenze (opzionale)</h3>
-      <p>Se l'utente collega un account Firebase dall'area Cloud e Licenza, l'App puo trattare:</p>
+      <p>Se l'utente collega un account Firebase dall'area Account e Licenza, l'App puo trattare:</p>
       <ul class="compact">
         <li>indirizzo email dell'esercente;</li>
         <li>UID Firebase;</li>
@@ -72,39 +80,96 @@
       </ul>
       <p>
         L'App puo inoltre interrogare Google Play Billing, leggere o pubblicare su Firestore un
-        mirror licenza e recuperare parametri da Firebase Remote Config.
+        mirror licenza e recuperare parametri da Firebase Remote Config. I dati di pagamento degli
+        acquisti in-app o degli abbonamenti sono gestiti da Google Play e non vengono memorizzati
+        direttamente dall'App.
       </p>
 
       <h3>2.3 Dati statistici e diagnostici</h3>
+
+      <h4>Crash fatals (sempre attivi nelle build di rilascio)</h4>
       <p>
-        Se Firebase e attivo nella build installata, l'App puo inviare dati statistici e
-        diagnostici (Analytics, Crashlytics), inclusi eventi di utilizzo, metadati tecnici e,
-        se l'utente e autenticato, associazione tramite UID Firebase ai report di crash.
+        Se Firebase Crashlytics e attivo, l'App puo inviare dati relativi ai
+        <strong>crash fatali</strong> (stack trace, modello dispositivo, versione Android e
+        versione dell'App). Con account Firebase collegato, i report possono essere associati
+        all'UID. I breadcrumb di log possono accompagnare i soli crash fatali; gli errori
+        <strong>non fatali</strong> non vengono registrati senza il consenso di Assistenza remota.
       </p>
+
+      <h4>Assistenza remota (opt-in, piano a pagamento)</h4>
+      <p>
+        Se l'utente attiva volontariamente <strong>Assistenza remota</strong>, l'App puo inviare
+        per massimo 24 ore per attivazione, in base ai toggle di consenso:
+      </p>
+      <ul class="compact">
+        <li>eventi operativi sintetici via Firebase Analytics (test POS/RT, sync LAN, backup/ripristino, stampa, operazioni RT, import/export, billing, sessioni), senza importi;</li>
+        <li>errori tecnici non fatali (POS, stampanti, sync, cloud, billing, import/export);</li>
+        <li>contesto hardware non sensibile (provider/modello POS e stampante fiscale);</li>
+        <li>sintesi della configurazione cassa (flag di sicurezza senza PIN/secret, sconti/arrotondamenti, consensi backup cloud).</li>
+      </ul>
+      <p>
+        Gli eventi analitici personalizzati dell'App partono <strong>solo</strong> con sessione attiva
+        e relativo toggle. L'SDK Firebase Analytics puo comunque elaborare metadati tecnici di
+        sessione del servizio Google; l'App non usa SDK pubblicitari e rimuove il permesso
+        <code>AD_ID</code>.
+      </p>
+      <p>
+        Con sessione attiva e account collegato puo essere pubblicato su Firestore un mirror
+        tecnico della sessione (<code>merchants/{uid}/remoteAssistance/session</code>).
+      </p>
+      <p>
+        L'utente puo inviare un <strong>report assistenza</strong> sanitizzato (messaggio libero
+        opzionale fino a 500 caratteri) su
+        <code>merchants/{uid}/supportReports</code>, con email al gestore e ricevuta all'utente se
+        disponibile. Dopo l'invio:
+      </p>
+      <ul class="compact">
+        <li>i toggle restano visibili ma non modificabili per 24 ore (cooldown anti-spam);</li>
+        <li>l'invio continuo prosegue fino a revoca utente o chiusura dal supporto (<code>end_session</code>);</li>
+        <li>la revoca ferma subito lo streaming e notifica il gestore; i toggle restano bloccati fino a fine cooldown;</li>
+        <li>un nuovo report e possibile solo dopo 24 ore; a fine cooldown i toggle vengono azzerati.</li>
+      </ul>
+      <p>
+        Offline il report resta in coda locale e viene inviato al ripristino rete; la revoca
+        cancella la coda. Il report non contiene password, token, API key, MAC, IP ne importi.
+      </p>
+      <p>Gestione remota dal supporto:</p>
+      <ul class="compact">
+        <li><strong>end_session:</strong> con richiesta aperta equivale a revoca; senza report azzera subito i toggle;</li>
+        <li><strong>close_ticket:</strong> avviso in-app senza cambiare da solo lo stato di invio;</li>
+        <li><strong>policy di accesso</strong> (<code>remoteAssistance/policy</code>): puo disabilitare temporaneamente o permanentemente Assistenza remota per abuso/rate-limit, senza raccogliere diagnostica aggiuntiva.</li>
+      </ul>
 
       <h3>2.4 Sincronizzazione LAN</h3>
       <p>
-        Se abilitata, la sync master/slave scambia dati operativi tra dispositivi accoppiati
-        sulla rete locale, con autenticazione tramite token condiviso e firma HMAC.
+        Se abilitata, la sync master/slave scambia dati operativi tra dispositivi accoppiati sulla
+        rete locale, con autenticazione tramite token condiviso e firma HMAC, senza server internet
+        centrale di default.
       </p>
 
       <h3>2.5 Backup, export, import e condivisione</h3>
       <p>
-        L'utente puo salvare backup locali, esportare CSV, importare JSON e condividere file
-        tramite Android. L'export portabile delle impostazioni esclude PIN, segreti TOTP e
-        principali credenziali tecniche POS/RT.
+        L'utente puo salvare backup locali, esportare CSV, importare JSON e condividere file tramite
+        Android. L'export portabile delle impostazioni esclude PIN, segreti TOTP e principali
+        credenziali tecniche POS/RT. Database locale e preferenze sensibili sono esclusi dal backup
+        automatico Android.
       </p>
 
       <h3>2.6 Backup cloud Firebase</h3>
       <p>
-        L'infrastruttura per un futuro backup cloud cifrato esiste nel progetto, ma non e ancora
-        esposta come flusso ordinario nella versione corrente dell'App.
+        Con licenza Professional o superiore e consenso esplicito, l'App puo salvare un singolo
+        snapshot cifrato (AES-256/GCM, chiave nel Keystore del dispositivo) su Firebase Storage con
+        metadati su Firestore (<code>merchants/{uid}/backups/latest</code>). Il ripristino e possibile
+        solo sullo stesso dispositivo che ha creato il backup. Attivazione manuale da Impostazioni
+        &rarr; Backup e Ripristino &rarr; Cloud, oppure sync automatico giornaliero dopo il primo
+        consenso.
       </p>
 
       <h3>2.7 Configurazioni hardware e pagamenti</h3>
       <p>
         L'App puo memorizzare localmente parametri tecnici di stampanti, registratori fiscali e
-        terminali di pagamento configurati dall'esercente.
+        terminali di pagamento configurati dall'esercente. I dati della carta restano presso i
+        provider/acquirer esterni.
       </p>
 
       <h3>2.8 Permessi del dispositivo</h3>
@@ -142,12 +207,16 @@
             <td>Esecuzione del contratto e/o richiesta esplicita (art. 6.1.b GDPR)</td>
           </tr>
           <tr>
-            <td>Analisi statistiche e miglioramento prodotto</td>
+            <td>Diagnostica dei crash fatali e sicurezza applicativa</td>
             <td>Legittimo interesse (art. 6.1.f GDPR)</td>
           </tr>
           <tr>
-            <td>Diagnostica, sicurezza e prevenzione malfunzionamenti</td>
-            <td>Legittimo interesse (art. 6.1.f GDPR)</td>
+            <td>Assistenza remota, eventi analitici opt-in e report assistenza</td>
+            <td>Consenso dell'utente (art. 6.1.a GDPR)</td>
+          </tr>
+          <tr>
+            <td>Backup cloud cifrato (Professional+)</td>
+            <td>Consenso / esecuzione del contratto (art. 6.1.a / 6.1.b GDPR)</td>
           </tr>
         </tbody>
       </table>
@@ -160,7 +229,10 @@
         <li><strong>Backup/export locali:</strong> fino alla eliminazione nelle cartelle scelte.</li>
         <li><strong>Sync LAN:</strong> sulle postazioni accoppiate, senza server centrale di default.</li>
         <li><strong>Account Firebase e mirror Firestore:</strong> fino alla cancellazione account o fine gestione licenza.</li>
-        <li><strong>Acquisti Play, Analytics e Crashlytics:</strong> secondo policy Google/Firebase.</li>
+        <li><strong>Acquisti Play, Crashlytics e Remote Config:</strong> secondo policy Google/Firebase.</li>
+        <li><strong>Assistenza remota e report:</strong> fino a cancellazione account o gestione della richiesta; sessione max 24h, cooldown anti-spam 24h dall'invio.</li>
+        <li><strong>Analytics opt-in:</strong> secondo policy Google/Firebase.</li>
+        <li><strong>Backup cloud:</strong> singolo snapshot <code>latest</code> fino a sostituzione, cancellazione account o richiesta al supporto.</li>
       </ul>
     </section>
 
@@ -168,7 +240,7 @@
       <h2>5. Condivisione con terze parti</h2>
       <p>L'App non vende i dati e non utilizza SDK pubblicitari. I dati possono essere comunicati a:</p>
       <ul class="compact">
-        <li>Google / Firebase (Auth, Firestore, Remote Config, Analytics, Crashlytics)</li>
+        <li>Google / Firebase (Auth, Firestore, Remote Config, Analytics, Crashlytics, Storage)</li>
         <li>Google Play Billing</li>
         <li>Provider di pagamento e terminali configurati dall'esercente</li>
         <li>App o servizi scelti dall'utente per export/condivisione file</li>
@@ -194,7 +266,8 @@
         Se l'utente ha creato un account cloud/Firebase tramite l'App, puo richiederne la
         cancellazione scrivendo a
         <a href="mailto:southtechitaly@gmail.com">southtechitaly@gmail.com</a>
-        oppure avviando la richiesta dalla schermata <strong>Cloud e Licenza</strong> dell'App.
+        oppure inviando la richiesta dalla schermata <strong>Account e Licenza</strong> dell'App
+        (con account collegato la richiesta viene registrata su cloud e notificata al supporto).
         Dettagli completi nella pagina
         <a href="account-deletion.html">Cancellazione account cloud</a>.
       </p>
@@ -243,7 +316,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Ultimo aggiornamento: 22 giugno 2026</p>
+    <p>Ultimo aggiornamento: 27 luglio 2026</p>
   </footer>
 </body>
 </html>
