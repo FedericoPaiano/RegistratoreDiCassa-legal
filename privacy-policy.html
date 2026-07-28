@@ -28,7 +28,7 @@
         <strong>Titolare del Trattamento:</strong> Federico Paiano<br>
         <strong>Email di contatto:</strong>
         <a href="mailto:southtechitaly@gmail.com">southtechitaly@gmail.com</a><br>
-        <strong>Data di ultimo aggiornamento:</strong> 27 luglio 2026
+        <strong>Data di ultimo aggiornamento:</strong> 28 luglio 2026
       </p>
     </section>
 
@@ -149,10 +149,15 @@
 
       <h3>2.5 Backup, export, import e condivisione</h3>
       <p>
-        L'utente puo salvare backup locali, esportare CSV, importare JSON e condividere file tramite
-        Android. L'export portabile delle impostazioni esclude PIN, segreti TOTP e principali
-        credenziali tecniche POS/RT. Database locale e preferenze sensibili sono esclusi dal backup
-        automatico Android.
+        L'utente puo salvare backup locali di catalogo e impostazioni in JSON; snapshot transazioni
+        per ambito in JSON; e dump completi del database in formato compresso
+        <code>.rdcsnap</code>, con cifratura opzionale basata su password scelta dall'utente
+        (AES-256/GCM; la password non e conservata dall'App). Sono supportati anche export CSV
+        legacy, import da file esterni e condivisione tramite Android. L'export portabile delle
+        impostazioni esclude PIN, segreti TOTP e principali credenziali tecniche POS/RT. Database
+        locale e preferenze sensibili sono esclusi dal backup automatico Android. Se un dump
+        <code>.rdcsnap</code> e cifrato con password, senza di essa il file non e recuperabile
+        dall'App ne dal Titolare.
       </p>
 
       <h3>2.6 Backup cloud Firebase</h3>
