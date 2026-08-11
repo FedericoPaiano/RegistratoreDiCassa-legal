@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Informativa privacy - Registratore di Cassa</title>
   <meta name="description" content="Informativa sulla privacy dell'app Android Registratore di Cassa.">
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <header class="site-header">
@@ -28,7 +28,7 @@
         <strong>Titolare del Trattamento:</strong> Federico Paiano<br>
         <strong>Email di contatto:</strong>
         <a href="mailto:southtechitaly@gmail.com">southtechitaly@gmail.com</a><br>
-        <strong>Data di ultimo aggiornamento:</strong> 28 luglio 2026
+        <strong>Data di ultimo aggiornamento:</strong> 11 agosto 2026
       </p>
     </section>
 
@@ -42,10 +42,12 @@
         normativa italiana applicabile.
       </p>
       <p>
-        L'App e progettata principalmente per l'uso da parte di esercenti e operatori commerciali
-        e, nella configurazione standard, non richiede dati identificativi del cliente finale ne
-        dati completi della carta di pagamento. L'utente e invitato a non inserire dati personali
-        non necessari in campi liberi, note operative o file condivisi.
+        L'App e progettata principalmente per l'uso da parte di esercenti e operatori commerciali.
+        Nella vendita a banco ordinaria non richiede dati identificativi del cliente finale ne
+        dati completi della carta di pagamento. La funzione opzionale di
+        <strong>prenotazione tavolo</strong> puo tuttavia memorizzare nome e telefono dell'ospite
+        se l'operatore li inserisce. L'utente e invitato a non inserire dati personali non necessari
+        in campi liberi, note operative o file condivisi.
       </p>
     </section>
 
@@ -59,6 +61,7 @@
       </p>
       <ul class="compact">
         <li>catalogo prodotti, prezzi, categorie, aggiunte e configurazioni IVA;</li>
+        <li>anagrafica tavoli/zone e, se usata la funzione prenotazioni, dati dell'ospite (nome, telefono), data/ora, posti/coperti e stato operativo;</li>
         <li>transazioni di vendita, righe di dettaglio, importi, metodo di pagamento, esiti fiscali e progressivi del documento commerciale;</li>
         <li>sessioni e turni di cassa, movimenti di cassa, report e storico operativo;</li>
         <li>audit log delle operazioni sensibili;</li>
@@ -142,22 +145,19 @@
 
       <h3>2.4 Sincronizzazione LAN</h3>
       <p>
-        Se abilitata, la sync master/slave scambia dati operativi tra dispositivi accoppiati sulla
-        rete locale, con autenticazione tramite token condiviso e firma HMAC, senza server internet
-        centrale di default.
+        Se abilitata, la sync master/slave scambia sulla rete locale del punto vendita catalogo,
+        configurazioni, transazioni, chiusure, report, ordini tavolo e, se presenti, prenotazioni
+        (incluse nome e telefono ospite) tra postazioni accoppiate. Autenticazione tramite codice
+        di pairing, token condiviso e firma HMAC, senza server internet centrale di default.
       </p>
 
       <h3>2.5 Backup, export, import e condivisione</h3>
       <p>
-        L'utente puo salvare backup locali di catalogo e impostazioni in JSON; snapshot transazioni
-        per ambito in JSON; e dump completi del database in formato compresso
-        <code>.rdcsnap</code>, con cifratura opzionale basata su password scelta dall'utente
-        (AES-256/GCM; la password non e conservata dall'App). Sono supportati anche export CSV
-        legacy, import da file esterni e condivisione tramite Android. L'export portabile delle
-        impostazioni esclude PIN, segreti TOTP e principali credenziali tecniche POS/RT. Database
-        locale e preferenze sensibili sono esclusi dal backup automatico Android. Se un dump
-        <code>.rdcsnap</code> e cifrato con password, senza di essa il file non e recuperabile
-        dall'App ne dal Titolare.
+        L'utente puo salvare backup locali di catalogo, impostazioni e snapshot transazioni in
+        JSON; esportare CSV (sola uscita contabile); importare JSON e condividere file tramite
+        Android. L'export portabile delle impostazioni esclude PIN, segreti TOTP e principali
+        credenziali tecniche POS/RT. Database locale e preferenze sensibili sono esclusi dal backup
+        automatico Android.
       </p>
 
       <h3>2.6 Backup cloud Firebase</h3>
@@ -234,6 +234,7 @@
         <li><strong>Backup/export locali:</strong> fino alla eliminazione nelle cartelle scelte.</li>
         <li><strong>Sync LAN:</strong> sulle postazioni accoppiate, senza server centrale di default.</li>
         <li><strong>Account Firebase e mirror Firestore:</strong> fino alla cancellazione account o fine gestione licenza.</li>
+        <li><strong>Richieste di cancellazione:</strong> con richiesta approvata, wipe di Auth, Firestore merchant e Storage backup nella disponibilita del Titolare, salvo conservazione lecita residua e audit tecnico minimo; dopo il wipe e possibile la riattivazione di un account cloud vuoto.</li>
         <li><strong>Acquisti Play, Crashlytics e Remote Config:</strong> secondo policy Google/Firebase.</li>
         <li><strong>Assistenza remota e report:</strong> fino a cancellazione account o gestione della richiesta; sessione max 24h, cooldown anti-spam 24h dall'invio.</li>
         <li><strong>Analytics opt-in:</strong> secondo policy Google/Firebase.</li>
@@ -269,16 +270,33 @@
       <h3>7.1 Richieste di cancellazione account cloud</h3>
       <p>
         Se l'utente ha creato un account cloud/Firebase tramite l'App, puo richiederne la
-        cancellazione scrivendo a
-        <a href="mailto:southtechitaly@gmail.com">southtechitaly@gmail.com</a>
-        oppure inviando la richiesta dalla schermata <strong>Account e Licenza</strong> dell'App
-        (con account collegato la richiesta viene registrata su cloud e notificata al supporto).
-        Dettagli completi nella pagina
-        <a href="account-deletion.html">Cancellazione account cloud</a>.
+        cancellazione:
+      </p>
+      <ol class="steps">
+        <li>
+          <strong>Dall'App (consigliato)</strong> — Impostazioni &rarr; <strong>Account e Licenza</strong>
+          &rarr; <strong>Privacy e cancellazione account</strong>. Con account collegato conferma
+          digitando <strong>CANCELLA</strong>: la richiesta e registrata su cloud e notificata al
+          supporto. Senza account collegato si apre una bozza email. Durante l'elaborazione backup
+          cloud e sync automatica restano sospesi.
+        </li>
+        <li>
+          <strong>Via email</strong> —
+          <a href="mailto:southtechitaly@gmail.com">southtechitaly@gmail.com</a>.
+        </li>
+      </ol>
+      <p>
+        Dopo approvazione, nella misura tecnicamente disponibile, vengono eliminati Auth Firebase,
+        documento merchant/sottocollezioni Firestore (mirror licenza, backup metadata, report e
+        sessione assistenza) e snapshot Storage. Analytics/Crashlytics/Remote Config restano soggetti
+        alle retention Google. Dati locali, file utente, sync LAN e storico acquisti Play non sono
+        cancellati automaticamente; un abbonamento Play attivo non si annulla da solo.
       </p>
       <p>
-        I dati presenti solo in locale o nei file di backup/export sotto il controllo dell'utente
-        devono essere rimossi dall'utente stesso.
+        Tempi ordinari: entro <strong>30 giorni</strong>. Dopo il wipe l'App puo offrire la
+        <strong>riattivazione</strong> di un account cloud vuoto (senza recupero dati eliminati).
+        Dettagli completi nella pagina
+        <a href="account-deletion.html">Cancellazione account cloud</a>.
       </p>
       <p>
         Reclami al Garante:
@@ -321,7 +339,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Ultimo aggiornamento: 27 luglio 2026</p>
+    <p>Ultimo aggiornamento: 11 agosto 2026</p>
   </footer>
 </body>
 </html>

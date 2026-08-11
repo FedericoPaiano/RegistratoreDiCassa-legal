@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Cancellazione account cloud - Registratore di Cassa</title>
   <meta name="description" content="Come richiedere la cancellazione dell'account cloud Firebase e dei dati cloud associati all'app Registratore di Cassa.">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <header class="site-header">
@@ -25,7 +25,7 @@
       <h2>Cancellazione account cloud opzionale</h2>
       <p>
         L'app <strong>Registratore di Cassa</strong> consente di creare un account cloud/Firebase
-        opzionale dall'area <strong>Cloud e Licenza</strong>. Questa pagina descrive come richiedere
+        opzionale dall'area <strong>Account e Licenza</strong>. Questa pagina descrive come richiedere
         la cancellazione di tale account e dei relativi dati cloud trattati dal titolare o dai
         fornitori di servizio configurati.
       </p>
@@ -41,34 +41,40 @@
       <ol class="steps">
         <li>
           <strong>Dall'app (consigliato)</strong><br>
-          Apri <strong>Impostazioni</strong> &rarr; <strong>Cloud e Licenza</strong> &rarr;
+          Apri <strong>Impostazioni</strong> &rarr; <strong>Account e Licenza</strong> &rarr;
           sezione <strong>Privacy e cancellazione account</strong> &rarr;
-          <strong>Richiedi cancellazione</strong>. L'app aprira una bozza email precompilata
-          verso il supporto con email account e UID Firebase, se disponibili.
+          <strong>Richiedi cancellazione</strong>. Con account collegato conferma digitando
+          <strong>CANCELLA</strong>: l'app registra la richiesta su cloud (email account e UID
+          inclusi) e avvisa il supporto. Senza account collegato si apre una bozza email precompilata.
+          Finche la pratica e aperta, backup cloud e sincronizzazione automatica restano sospesi.
         </li>
         <li>
           <strong>Via email</strong><br>
           Scrivi a
           <a href="mailto:southtechitaly@gmail.com?subject=Richiesta%20cancellazione%20account%20cloud%20-%20Registratore%20di%20Cassa">southtechitaly@gmail.com</a>
           indicando l'indirizzo email usato per l'account cloud/Firebase e, se possibile,
-          l'UID Firebase mostrato nella schermata Cloud e Licenza.
+          l'UID Firebase mostrato nella schermata Account e Licenza.
         </li>
       </ol>
       <div class="button-row">
-        <a class="button button-danger" href="mailto:southtechitaly@gmail.com?subject=Richiesta%20cancellazione%20account%20cloud%20-%20Registratore%20di%20Cassa&amp;body=Buongiorno%2C%0A%0Adesidero%20richiedere%20la%20cancellazione%20del%20mio%20account%20cloud%20per%20l'app%20Registratore%20di%20Cassa.%0A%0AEmail%20account%3A%20%0AUID%20Firebase%3A%20%0A%0AGrazie.">Apri email di richiesta</a>
+        <a class="button button-danger" href="mailto:southtechitaly@gmail.com?subject=Richiesta%20cancellazione%20account%20cloud%20-%20Registratore%20di%20Cassa&amp;body=Buongiorno%2C%0A%0Adesidero%20richiedere%20la%20cancellazione%20del%20mio%20account%20cloud%20per%20l'app%20Registratore%20di%20Cassa%20e%20dei%20relativi%20dati%20cloud%20associati.%0A%0AEmail%20account%3A%20%0ACodice%20UID%3A%20%0A%0ASono%20consapevole%20che%20i%20dati%20presenti%20solo%20in%20locale%20sul%20dispositivo%20o%20nei%20file%20di%20backup%2Fexport%20sotto%20il%20mio%20controllo%20devono%20essere%20rimossi%20manualmente.%0A%0AGrazie.">Apri email di richiesta</a>
       </div>
     </section>
 
     <section class="card">
       <h2>Dati che verranno eliminati o disassociati</h2>
       <p>
-        Dopo verifica dell'identita dell'intestatario dell'account, il titolare provvedera,
-        nella propria disponibilita e nei limiti tecnici dei servizi utilizzati, a:
+        Dopo verifica dell'identita dell'intestatario dell'account e approvazione della richiesta,
+        il titolare provvedera, nella propria disponibilita e nei limiti tecnici dei servizi
+        utilizzati, a:
       </p>
       <ul class="compact">
-        <li>eliminare o disattivare l'account Firebase associato all'esercente;</li>
-        <li>rimuovere o anonimizzare il mirror licenza/entitlement su Firestore collegato all'UID Firebase, ove presente;</li>
-        <li>interrompere l'associazione dell'account cloud con i servizi Firebase dell'app (Auth, Firestore, diagnostica correlata all'UID).</li>
+        <li>eliminare o disattivare l'account Firebase Auth associato all'esercente;</li>
+        <li>rimuovere il documento merchant e le sottocollezioni su Firestore collegate all'UID
+          (mirror licenza/entitlement, metadati backup, report di assistenza remota, stato sessione
+          assistenza e richieste correlate);</li>
+        <li>eliminare gli snapshot di backup cloud su Firebase Storage collegati all'UID;</li>
+        <li>conservare un audit tecnico minimo lato backend per tracciare l'esito dell'operazione.</li>
       </ul>
       <p>
         Eventuali dati gia inviati a Google Firebase (Analytics, Crashlytics, Remote Config)
@@ -82,8 +88,8 @@
       <ul class="compact">
         <li>
           <strong>Dati operativi locali</strong> sul dispositivo (catalogo, transazioni, impostazioni,
-          configurazioni hardware): restano sotto il controllo dell'utente fino a disinstallazione,
-          reset dell'app o cancellazione manuale.
+          configurazioni hardware, prenotazioni tavolo): restano sotto il controllo dell'utente fino
+          a disinstallazione, reset dell'app o cancellazione manuale.
         </li>
         <li>
           <strong>File di backup, export o import</strong> salvati in cartelle scelte dall'utente
@@ -96,7 +102,9 @@
         <li>
           <strong>Storico acquisti e abbonamenti Google Play</strong>: gestito da Google secondo
           le proprie policy; la cancellazione dell'account cloud non elimina automaticamente
-          gli acquisti registrati da Google Play Billing.
+          gli acquisti registrati da Google Play Billing. Un abbonamento Play attivo
+          <strong>non</strong> viene annullato automaticamente: annullalo da Play Store se non
+          vuoi piu addebiti.
         </li>
         <li>
           <strong>Dati trattati da provider di pagamento o stampanti fiscali</strong> configurati
@@ -105,8 +113,20 @@
       </ul>
       <p>
         Per rimuovere i dati presenti solo in locale, l'utente puo disinstallare l'app,
-        cancellare i file generati o ripristinare i dati dall'interno dell'applicazione,
-        ove previsto dalle funzioni disponibili.
+        cancellare i file generati o usare le funzioni di cancellazione/ripristino disponibili
+        nell'applicazione.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Riattivazione dopo la cancellazione</h2>
+      <p>
+        Dopo una cancellazione completata, l'app puo mostrare la card
+        <strong>Privacy e riattivazione account</strong>. Confermando con
+        <strong>ATTIVA</strong> (o via email se non collegati) si richiede la preparazione di un
+        <strong>account cloud vuoto</strong>: i dati cloud eliminati non vengono recuperati.
+        Puoi reimportare un backup locale da Backup e ripristino e usare Verifica licenza per
+        riallineare il piano Play.
       </p>
     </section>
 
@@ -119,7 +139,8 @@
       </p>
       <p>
         Potra essere richiesta una verifica dell'identita o ulteriori informazioni per
-        impedire cancellazioni non autorizzate.
+        impedire cancellazioni non autorizzate. Una richiesta non verificabile puo essere
+        rifiutata; l'esito puo essere mostrato in app.
       </p>
     </section>
 
@@ -127,8 +148,8 @@
       <h2>Conservazione residua</h2>
       <p>
         Alcuni dati possono essere conservati oltre la cancellazione dell'account solo se
-        necessario per obblighi di legge, sicurezza, prevenzione frodi, gestione di contestazioni
-        o altri motivi leciti previsti dal GDPR e dalla normativa applicabile.
+        necessario per obblighi di legge, sicurezza, prevenzione frodi, gestione di contestazioni,
+        audit tecnico minimo o altri motivi leciti previsti dal GDPR e dalla normativa applicabile.
       </p>
     </section>
 
@@ -143,7 +164,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Ultimo aggiornamento: 22 giugno 2026</p>
+    <p>Ultimo aggiornamento: 11 agosto 2026</p>
   </footer>
 </body>
 </html>
