@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Informativa privacy - Registratore di Cassa</title>
-  <meta name="description" content="Informativa sulla privacy dell'app Android Registratore di Cassa (mirror di documentation/privacy_policy.md).">
+  <meta name="description" content="Informativa sulla privacy dell'app Android Registratore di Cassa (mirror di documentation/legal/privacy_policy.md).">
   <link rel="stylesheet" href="style.css?v=8">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -30,10 +30,10 @@
         <strong>Titolare del Trattamento:</strong> Federico Paiano<br>
         <strong>Email di contatto:</strong>
         <a href="mailto:southtechitaly@gmail.com">southtechitaly@gmail.com</a><br>
-        <strong>Data di ultimo aggiornamento:</strong> 11 agosto 2026
+        <strong>Data di ultimo aggiornamento:</strong> 12 ottobre 2026
       </p>
       <p class="meta">
-        Mirror pubblico di <code>documentation/privacy_policy.md</code>.
+        Mirror pubblico di <code>documentation/legal/privacy_policy.md</code>.
         Dettagli operativi sulla cancellazione anche in
         <a href="account-deletion.html">Cancellazione account cloud</a>.
       </p>
@@ -69,6 +69,8 @@
       <ul class="compact">
         <li>catalogo prodotti, prezzi, categorie, aggiunte e configurazioni IVA;</li>
         <li>anagrafica tavoli/zone e, se usata la funzione prenotazioni, dati dell'ospite (nome, telefono), data/ora della prenotazione, posti/coperti e stato operativo;</li>
+        <li>anagrafica operatori di cassa (nome, ruolo/permessi, hash PIN locale) se attiva la funzione multi-operatore;</li>
+        <li>dati di magazzino/scorte e movimenti correlati, se usata la funzione Magazzino;</li>
         <li>transazioni di vendita, righe di dettaglio, importi, metodo di pagamento, esiti fiscali e progressivi del documento commerciale;</li>
         <li>sessioni e turni di cassa, movimenti di cassa, report e storico operativo;</li>
         <li>audit log delle operazioni sensibili;</li>
@@ -98,8 +100,27 @@
         <li>recuperare da Firebase Remote Config parametri e limiti funzionali del piano.</li>
       </ul>
       <p>
-        I dati di pagamento degli acquisti in-app o degli abbonamenti sono gestiti da Google Play
-        e non vengono memorizzati direttamente dall'App.
+        Per la gestione licenze e l'audit operativo degli abbonamenti, sul backend Firebase possono
+        essere utilizzati, tra gli altri, i seguenti percorsi Firestore:
+      </p>
+      <ul class="compact">
+        <li><code>playPurchaseClaims/{purchaseToken}</code> — registro globale di associazione token di acquisto Google Play &rarr; titolare dell'account (owner UID);</li>
+        <li><code>merchants/{uid}/commerce/entitlements</code> — mirror per account dello stato di piano, limiti e entitlement;</li>
+        <li><code>merchants/{uid}/purchaseHistory/...</code> e relativo indice <code>purchaseHistoryByUser/{email}</code> — registro interno dei periodi di abbonamento (rinnovi, cancellazioni, scadenze), a fini di audit operativo e licensing, <strong>senza</strong> dati della carta di pagamento.</li>
+      </ul>
+      <p>
+        Le <strong>Google Play Real-time Developer Notifications (RTDN)</strong> possono aggiornare
+        su Firebase lo storico interno di acquisto/abbonamento (in particolare
+        <code>purchaseHistory</code> e l'indice correlato) in occasione di rinnovi, cancellazioni o
+        scadenze, anche <strong>senza</strong> che l'utente apra l'App. Tali notifiche sono
+        elaborate lato cloud (Pub/Sub e Cloud Functions del progetto Firebase del Titolare) e non
+        contengono numeri di carta o dati completi di pagamento.
+      </p>
+      <p>
+        I dati di pagamento degli acquisti in-app o degli abbonamenti (inclusi i dati della carta)
+        restano gestiti da Google Play e non vengono memorizzati direttamente dall'App ne ricevuti
+        tramite RTDN. Lo storico interno su Firestore e un audit operativo/licensing, non un
+        archivio di dati di pagamento.
       </p>
 
       <h3>2.3 Dati statistici e diagnostici (Crashlytics, Analytics e Assistenza remota)</h3>
@@ -200,6 +221,10 @@
         sono autenticati tramite codice di pairing, token condiviso e firma HMAC.
       </p>
 
+      
+      <h3>2.5bis Vault credenziali (locale, opzionale)</h3>
+      <p>L'App consente di salvare in una cartella scelta (<code>Credenziali/</code>) un vault di credenziali tecniche cifrato con passphrase (PBKDF2 + AES-GCM) per il ripristino dopo reinstallazione: Fiskaly SIGN IT, password RT e SumUp Cloud, se presenti. Il file resta sul dispositivo / nella cartella scelta dall'utente e <strong>non</strong> viene caricato sui server del Titolare né su Firebase. Senza passphrase il vault non è leggibile.</p>
+
       <h3>2.5 Backup, export, import e condivisione file scelti dall'utente</h3>
       <p>L'App consente all'utente di:</p>
       <ul class="compact">
@@ -286,7 +311,7 @@
       <h3>2.8 Permessi del dispositivo</h3>
       <p>L'App puo dichiarare o richiedere permessi del dispositivo per le seguenti finalita:</p>
       <ul class="compact">
-        <li><strong>Fotocamera (<code>CAMERA</code>)</strong>: scansione QR per il pairing delle postazioni. Le immagini sono elaborate in tempo reale e non vengono intenzionalmente archiviate o inviate ai server del Titolare.</li>
+        <li><strong>Fotocamera (<code>CAMERA</code>)</strong>: scansione QR per il pairing delle postazioni e scansione barcode/EAN prodotti (ML Kit on-device). Le immagini sono elaborate in tempo reale e non vengono intenzionalmente archiviate o inviate ai server del Titolare.</li>
         <li><strong>Bluetooth e localizzazione tecnica</strong> (<code>BLUETOOTH</code>, <code>BLUETOOTH_CONNECT</code>, <code>BLUETOOTH_SCAN</code>, <code>ACCESS_FINE_LOCATION</code>): collegamento e discovery di stampanti o terminali BLE. L'App non usa tali permessi per il tracciamento geografico dell'utente; <code>ACCESS_FINE_LOCATION</code> e presente per requisiti tecnici di alcuni SDK esterni.</li>
         <li><strong>Accesso a file e cartelle</strong>: backup, export, import e condivisione file scelti dall'utente. Su Android meno recenti puo essere usato anche il permesso legacy di scrittura per la configurazione della cartella backup.</li>
         <li><strong>Rete, Wi-Fi, notifiche e foreground service</strong>: comunicazione con servizi cloud, dispositivi di rete e mantenimento della sincronizzazione locale tra postazioni.</li>
@@ -294,6 +319,10 @@
     </section>
 
     <section class="card">
+      
+      <h3>2.9 Fiskaly SIGN IT (fiscalizzazione elettronica opzionale)</h3>
+      <p>Se l'utente attiva e configura <strong>Fiskaly SIGN IT</strong>, l'App può trasmettere allo specialty provider <strong>Fiskaly</strong> (API <code>test.api.fiskaly.com</code> / <code>live.api.fiskaly.com</code>, onboarding via HUB Fiskaly) i dati necessari all'emissione e alla trasmissione dello scontrino elettronico verso l'Agenzia delle Entrate, tra cui dati anagrafici del contribuente, credenziali tecniche Fiskaly, contenuto fiscale dello scontrino e PDF AdE archiviati in locale (con eventuale email/LAN). Il trattamento presso Fiskaly avviene come fornitore del servizio di fiscalizzazione elettronica scelto dall'esercente.</p>
+
       <h2>3. Finalita del trattamento</h2>
       <p>I dati trattati dall'App vengono utilizzati per le seguenti finalita:</p>
       <table>
@@ -313,7 +342,7 @@
             <td>Esecuzione del contratto / del servizio richiesto (art. 6.1.b GDPR)</td>
           </tr>
           <tr>
-            <td>Autenticazione cloud, gestione licenze, verifica acquisti e refresh dei piani</td>
+            <td>Autenticazione cloud, gestione licenze, verifica acquisti/abbonamenti (anche via RTDN) e refresh dei piani</td>
             <td>Esecuzione del contratto / del servizio richiesto (art. 6.1.b GDPR)</td>
           </tr>
           <tr>
@@ -342,9 +371,11 @@
         <li><strong>Dati operativi locali:</strong> conservati sul dispositivo fino a disinstallazione dell'App, reset manuale, cancellazione esplicita o sovrascrittura da parte dell'utente.</li>
         <li><strong>File di backup/export locali:</strong> conservati nelle cartelle o destinazioni scelte dall'utente fino alla loro eliminazione.</li>
         <li><strong>Dati scambiati tramite sync LAN:</strong> restano memorizzati sulle postazioni accoppiate come parte dell'archivio operativo locale; non sono conservati, di default, su un server centrale.</li>
-        <li><strong>Dati account Firebase e mirror licenza su Firestore:</strong> conservati fino alla cancellazione dell'account o per il tempo necessario alla gestione dell'account/licenza.</li>
-        <li><strong>Richieste di cancellazione account e dati cloud:</strong> in caso di richiesta di cancellazione approvata, il Titolare elimina o anonimizza i dati cloud nella propria disponibilita (Auth, Firestore merchant e sottocollezioni, Storage backup), salvo eventuale conservazione necessaria per obblighi di legge, sicurezza, prevenzione frodi, gestione di contestazioni, audit tecnico minimo o altri motivi leciti previsti dalla normativa applicabile. Dopo il wipe puo essere richiesta la riattivazione di un account cloud vuoto senza recupero dei dati eliminati.</li>
-        <li><strong>Dati relativi ad acquisti e abbonamenti:</strong> gestiti da Google Play secondo le proprie policy di conservazione.</li>
+        <li><strong>Dati account Firebase e mirror licenza su Firestore:</strong> conservati fino alla cancellazione dell'account o per il tempo necessario alla gestione dell'account/licenza, inclusi entitlement (<code>merchants/{uid}/commerce/entitlements</code>) e registro interno <code>purchaseHistory</code> sotto il merchant, anche se aggiornati in background via RTDN.</li>
+        <li><strong>Claim globali di acquisto (<code>playPurchaseClaims</code>):</strong> conservati per il tempo necessario a garantire il binding token Play &rarr; titolare e a prevenire abusi/riassegnazioni indebite; in caso di cancellazione account possono essere anonimizzati o scollegati dall'identita dell'interessato nella misura tecnicamente fattibile (vedi sezione 7.1).</li>
+        <li><strong>Indice <code>purchaseHistoryByUser/{email}</code>:</strong> allineato allo storico merchant; trattato come dato di audit operativo collegato all'account e soggetto alle stesse logiche di cancellazione/anonimizzazione del Titolare.</li>
+        <li><strong>Richieste di cancellazione account e dati cloud:</strong> in caso di richiesta di cancellazione approvata, il Titolare elimina o anonimizza i dati cloud nella propria disponibilita (Auth, Firestore merchant e sottocollezioni — inclusi <code>purchaseHistory</code> e metadati correlati —, Storage backup e, ove tecnicamente fattibile, scollegamento/anonimizzazione di <code>playPurchaseClaims</code>), salvo eventuale conservazione necessaria per obblighi di legge, sicurezza, prevenzione frodi, gestione di contestazioni, audit tecnico minimo o altri motivi leciti previsti dalla normativa applicabile. Dopo il wipe puo essere richiesta la riattivazione di un account cloud vuoto senza recupero dei dati eliminati.</li>
+        <li><strong>Dati relativi ad acquisti e abbonamenti presso Google Play:</strong> gestiti da Google Play secondo le proprie policy di conservazione; le notifiche RTDN ricevute dal Titolare non includono dati della carta e alimentano solo lo storico operativo/licensing descritto sopra.</li>
         <li><strong>Crashlytics (crash fatals) e Remote Config:</strong> conservati secondo le policy di Google/Firebase e la configurazione del progetto.</li>
         <li><strong>Dati di Assistenza remota e report su Firestore:</strong> conservati fino a cancellazione account, richiesta al supporto o per il tempo necessario alla gestione della richiesta tecnica; lo stato di sessione locale scade al massimo entro 24 ore per attivazione e il cooldown anti-spam dura 24 ore dall'invio del report.</li>
         <li><strong>Eventi Analytics opt-in:</strong> conservati secondo le policy di Google/Firebase.</li>
@@ -362,12 +393,14 @@
       <ul class="compact">
         <li>
           <strong>Google LLC / Firebase</strong> - Authentication, Firestore, Remote Config,
-          Analytics, Crashlytics e Storage (backup cloud cifrato):
+          Analytics, Crashlytics, Storage (backup cloud cifrato) e Cloud Functions/Pub/Sub usati
+          per elaborare le notifiche di licenza:
           <a href="https://policies.google.com/privacy" rel="noopener noreferrer">https://policies.google.com/privacy</a>
         </li>
         <li>
-          <strong>Google LLC / Google Play Billing</strong> - verifica acquisti e gestione
-          abbonamenti/licenze:
+          <strong>Google LLC / Google Play Billing</strong> - verifica acquisti, gestione
+          abbonamenti/licenze e Real-time Developer Notifications (RTDN) verso il backend del
+          Titolare (senza trasmissione di dati della carta):
           <a href="https://policies.google.com/privacy" rel="noopener noreferrer">https://policies.google.com/privacy</a>
         </li>
         <li>
@@ -443,7 +476,8 @@
       </p>
       <ul class="compact">
         <li>eliminazione o disattivazione dell'account Firebase Auth;</li>
-        <li>rimozione del documento merchant e delle sottocollezioni associate su Firestore (mirror licenza/entitlement, metadati backup, report di assistenza remota, stato sessione assistenza e richieste correlate);</li>
+        <li>rimozione del documento merchant e delle sottocollezioni associate su Firestore sotto il controllo del Titolare (mirror licenza/entitlement, <code>purchaseHistory</code> sotto <code>merchants/{uid}</code>, metadati backup, report di assistenza remota, stato sessione assistenza e richieste correlate), nonche dell'indice correlato <code>purchaseHistoryByUser</code> collegato all'email dell'account;</li>
+        <li>anonimizzazione o scollegamento dei documenti globali <code>playPurchaseClaims/{purchaseToken}</code> associati all'account, nella misura tecnicamente fattibile, ferma restando eventuale conservazione minima necessaria a prevenzione frodi o obblighi di legge;</li>
         <li>eliminazione degli snapshot di backup cloud su Firebase Storage collegati all'UID;</li>
         <li>audit tecnico minimo lato backend per tracciare l'esito dell'operazione.</li>
       </ul>
@@ -539,7 +573,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Ultimo aggiornamento: 11 agosto 2026 &mdash; UID in Account e Piano attivo (dialog)</p>
+    <p>Ultimo aggiornamento: 12 ottobre 2026 &mdash; UID in Account e Piano attivo (dialog)</p>
   </footer>
 </body>
 </html>
